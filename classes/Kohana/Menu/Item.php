@@ -15,7 +15,7 @@ class Kohana_Menu_Item {
 	 * @var array Current item config
 	 * @since 2.0
 	 */
-	private $_config = [];
+	private $_config = array();
 	/**
 	 * @var Menu Reference to the items parent Menu
 	 * @since 2.0
@@ -33,7 +33,7 @@ class Kohana_Menu_Item {
 		$this->_menu = $menu;
 
 		// Save item config options. Defaults are retained if not present in $item_config
-		$this->_config = array_replace($this->_config, $item_config, ['items' => []]);
+		$this->_config = array_replace($this->_config, $item_config, array('items' => array()));
 
 		// Translate visible strings
 		$this->_config['title'] = __($this->_config['title']);
@@ -45,9 +45,10 @@ class Kohana_Menu_Item {
 		}
 
 		// Apply URL::site
-		if (! 'http://' == substr($this->_config['url'], 0, 7)    AND ! 'https://' == substr($this->_config['url'], 0, 8)) {
+        // Unnecesary! HTML::anchor is applying the same
+		/*if (! 'http://' == substr($this->_config['url'], 0, 7)    AND ! 'https://' == substr($this->_config['url'], 0, 8)) {
 			$this->_config['url'] = URL::site($this->_config['url']);
-		}
+		}*/
 
 		// Sub-menu
 		if (array_key_exists('items', $item_config) && count($item_config['items']) > 0) {
@@ -63,16 +64,16 @@ class Kohana_Menu_Item {
 	 */
 	public static function get_default_config()
 	{
-		return [
-			'classes'    => [], // Extra classes for this menu item
+		return array(
+			'classes'    => array(), // Extra classes for this menu item
 			'icon'       => NULL, // Icon class for this menu item
-			'siblings'   => [], // Sub-links
+			'siblings'   => array(), // Sub-links
 			'title'      => NULL, // Visible text
 			'tooltip'    => NULL, // Tooltip text for this menu item
 			'url'        => '#', // Relative or absolute target for this menu item (href)
 			'visible'    => TRUE, // Menu item is rendered
-			'attributes' => [] // Extra HTML attributes for the <li> element, assoc array
-		];
+			'attributes' => array() // Extra HTML attributes for the <li> element, assoc array
+		);
 	}
 
 	/**
@@ -96,9 +97,9 @@ class Kohana_Menu_Item {
 		}
 
 		$attributes = array_replace(
-			[
+			array(
 				'title' => $this->_config['tooltip']
-			],
+			),
 			$this->_config['attributes']
 		);
 
@@ -117,8 +118,10 @@ class Kohana_Menu_Item {
 	 */
 	public function is_link_empty()
 	{
-		return $this->_config['url'] === static::get_default_config()['url']
-		&& $this->_config['title'] === static::get_default_config()['title'];
+		$default_config = static::get_default_config();
+        
+        return $this->_config['url'] === $default_config['url']
+		&& $this->_config['title'] === $default_config['title'];
 	}
 
 	/**
